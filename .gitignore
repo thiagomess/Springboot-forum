@@ -29,4 +29,4 @@ hs_err_pid*
 .tern-project
 /bin/
 /target/
-
+.idea
