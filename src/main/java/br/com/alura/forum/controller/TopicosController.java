@@ -8,6 +8,11 @@ import br.com.alura.forum.modelo.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +35,21 @@ public class TopicosController {
     private CursoRepository cursoRepository;
 
     //    Passando na url o paramentro /topicos?nomeCurso=Spring Boot
-    @GetMapping
-    public List<TopicoDto> lista(String nomeCurso) {
-        final List<Topico> topicos;
+    //Nova url Fica: http://localhost:8080/topicos?pagina=0&qtd=30&ordenacao=id
+    //URL :http://localhost:8080/topicos?page=1&size=9&sort=mensagem,asc
+        @GetMapping
+    public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso,
+                                 @PageableDefault(direction = Sort.Direction.ASC) Pageable paginacao
+            /*@RequestParam int pagina, @RequestParam int qtd, @RequestParam String ordenacao*/) {
+
+       //Cria um atributo para paginação, pertence ao import org.springframework.data.domain.Pageable;
+        // Para nao usar esta linha abaixo, usamos o Pagable direto no metodo
+//        Pageable paginacao = PageRequest.of(pagina, qtd, Sort.Direction.ASC, ordenacao);
+        final Page<Topico> topicos;
         if (nomeCurso == null) {
-            topicos = topicoRepository.findAll();
+            topicos = topicoRepository.findAll(paginacao);
         } else {
-            topicos = topicoRepository.carregarCursoPeloNome(nomeCurso);
+            topicos = topicoRepository.findByCursoNome(nomeCurso, paginacao);
         }
         return TopicoDto.converter(topicos);
     }

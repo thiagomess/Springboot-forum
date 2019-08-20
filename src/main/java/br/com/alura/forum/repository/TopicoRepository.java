@@ -1,6 +1,8 @@
 package br.com.alura.forum.repository;
 
 import br.com.alura.forum.modelo.Topico;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +18,7 @@ public interface TopicoRepository extends JpaRepository<Topico, Long> {
 
     //Usando o padrão do Spring FindBy? ele cria a propria query, no caso de relacionamento, primeiro se da o nome
     // do relacionamento concaternado com o nome do atributo ou usando o "_" para separar
-    List<Topico> findByCursoNome(String nomeCurso);
+    Page<Topico> findByCursoNome(String nomeCurso, Pageable paginacao);
 
     //Caso nao queira usar o padrão do findBy, pode se usar o @Query e escrever a query
     @Query("SELECT t FROM Topico t WHERE t.curso.nome = :nomeCurso")
