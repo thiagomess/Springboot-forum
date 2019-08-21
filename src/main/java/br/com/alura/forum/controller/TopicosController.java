@@ -8,8 +8,9 @@ import br.com.alura.forum.modelo.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -20,7 +21,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,7 +37,8 @@ public class TopicosController {
     //    Passando na url o paramentro /topicos?nomeCurso=Spring Boot
     //Nova url Fica: http://localhost:8080/topicos?pagina=0&qtd=30&ordenacao=id
     //URL :http://localhost:8080/topicos?page=1&size=9&sort=mensagem,asc
-        @GetMapping
+    @GetMapping
+    @Cacheable(value = "listaDeTopicos") //funciona como um identificador único do cache.
     public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso,
                                  @PageableDefault(direction = Sort.Direction.ASC) Pageable paginacao
             /*@RequestParam int pagina, @RequestParam int qtd, @RequestParam String ordenacao*/) {
@@ -74,6 +75,7 @@ public class TopicosController {
 
     @PutMapping("{id}")
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "listaDeTopicos",allEntries = true) //Remove o Cache que colocamos no GET
     public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @Valid @RequestBody AtualizarTopicoForm form) {
         final Optional<Topico> optional = topicoRepository.findById(id); //Outra forma de validar seria usando o findById
         if (optional.isPresent()) {                                     //Entao verifica se esta presente e nao precisaria doErroDeValidacaoHandler
@@ -85,6 +87,7 @@ public class TopicosController {
 
     @DeleteMapping("{id}")
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "listaDeTopicos",allEntries = true) //Remove o Cache que colocamos no GET
     public ResponseEntity<?> excluir(@PathVariable Long id) {
         topicoRepository.deleteById(id);
         return ResponseEntity.ok().build();
