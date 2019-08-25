@@ -1,6 +1,7 @@
 package br.com.alura.forum.config.security;
 
 import br.com.alura.forum.modelo.Usuario;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.function.Function;
 
 @Service
 public class TokenService {
@@ -33,4 +35,40 @@ public class TokenService {
                 .signWith(SignatureAlgorithm.HS256, secret) //Senha e encriptação
                 .compact();
     }
+
+    public boolean isTokenValido(String token) {
+        try {
+            //Senão ocorre exception, é pq o token é valido
+            getInformacoesDoToken(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    //retorna o username do token jwt
+    public long getIdUsuario(String token) {
+        return Long.parseLong(getClaimFromToken(token, Claims::getSubject));
+    }
+
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getInformacoesDoToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    //para retornar qualquer informação do token nos iremos precisar da secret key
+    private Claims getInformacoesDoToken(String token) {
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    }
+
+//    //retorna expiration date do token jwt
+//    public Date getExpirationDateFromToken(String token) {
+//        return getClaimFromToken(token, Claims::getExpiration);
+//    }
+//
+//    //verifica se o token está expirado
+//    private Boolean isTokenExpired(String token) {
+//        final Date expiration = getExpirationDateFromToken(token);
+//        return expiration.before(new Date());
+//    }
 }
