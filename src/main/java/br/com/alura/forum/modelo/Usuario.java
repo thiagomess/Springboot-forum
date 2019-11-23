@@ -80,7 +80,15 @@ public class Usuario implements UserDetails {
 	public void setSenha(String senha) {
 		this.senha = senha;
 	}
+	
 
+	public List<Perfil> getPerfis() {
+		return perfis;
+	}
+
+	public void setPerfis(List<Perfil> perfis) {
+		this.perfis = perfis;
+	}
 
 	/*
 	* os metodos abaixo sao os metodos obrigatorios que devem ser implementados
