@@ -26,13 +26,25 @@ public class Topico {
 	@OneToMany(mappedBy = "topico")
 	private List<Resposta> respostas = new ArrayList<>();
 
-	public Topico(String titulo, String mensagem, Curso curso) {
+	public Topico(String titulo, String mensagem, Curso curso, Usuario usuario) {
 		this.titulo = titulo;
 		this.mensagem = mensagem;
 		this.curso = curso;
+		this.autor = usuario;
 	}
 
-    public Topico() {
+	public Topico(Long id, String titulo, String mensagem, LocalDateTime dataCriacao, StatusTopico status,
+			Usuario autor, Curso curso) {
+		this.id = id;
+		this.titulo = titulo;
+		this.mensagem = mensagem;
+		this.dataCriacao = dataCriacao;
+		this.status = status;
+		this.autor = autor;
+		this.curso = curso;
+	}
+
+	public Topico() {
 	}
 
 	@Override
@@ -53,9 +65,10 @@ public class Topico {
 			return false;
 		Topico other = (Topico) obj;
 		if (id == null) {
-            return other.id == null;
-		} else return id.equals(other.id);
-    }
+			return other.id == null;
+		} else
+			return id.equals(other.id);
+	}
 
 	public Long getId() {
 		return id;

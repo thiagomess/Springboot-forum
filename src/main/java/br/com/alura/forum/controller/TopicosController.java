@@ -7,6 +7,8 @@ import br.com.alura.forum.controller.form.TopicoForm;
 import br.com.alura.forum.modelo.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
+import br.com.alura.forum.repository.UsuarioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -33,6 +35,9 @@ public class TopicosController {
 
     @Autowired
     private CursoRepository cursoRepository;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     //    Passando na url o paramentro /topicos?nomeCurso=Spring Boot
     //Nova url Fica: http://localhost:8080/topicos?pagina=0&qtd=30&ordenacao=id
@@ -58,7 +63,7 @@ public class TopicosController {
     @PostMapping
     @Transactional
     public ResponseEntity<TopicoDto> cadastrar(@Valid @RequestBody TopicoForm topicoForm, UriComponentsBuilder uriBuilder) {
-        Topico topico = topicoForm.converter(cursoRepository);
+        Topico topico = topicoForm.converter(cursoRepository, usuarioRepository);
         topicoRepository.save(topico);
 
         //Cria a URI
