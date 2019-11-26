@@ -17,6 +17,17 @@ https://cursos.alura.com.br/certificate/42a5d8bf-adcd-4037-b55c-986d7804d2d0
 https://forum-api-alura.herokuapp.com/auth
 ## POST
 
+Usuário com role ADMIN
+
+ ```json
+{
+	"email":"admin@email.com",
+	"senha":"123456"
+}
+```
+
+Usuário com role comum:
+
  ```json
 {
 	"email":"aluno@email.com",
@@ -39,6 +50,9 @@ https://forum-api-alura.herokuapp.com/auth
 }
  ```
 ## PUT
+
+O usuário com role comum, tem permisão apenas para alterar um tópico que ele criou, já o usuario com role admin pode alterar o seu ou dos demais usuários
+
  ```json
 {
 	"titulo":"Duvida",
