@@ -63,3 +63,14 @@ O usuário com role comum, tem permisão apenas para alterar um tópico que ele 
 
 ## DELETE
  https://forum-api-alura.herokuapp.com/topicos/1
+
+------------------------------------------------------
+
+#Rodando no Docker
+
+mvn clean install
+
+docker build -t alura/forum .
+
+docker run -p 8080:8080 alura/forum
+
